@@ -10,14 +10,14 @@ address_df = load_address_data()
 
 @st.experimental_memo(show_spinner=True)
 def load_transport_data():
-    buss_gdf = gpd.read_file("data/transport/buss.gpkg")#CRS: EPSG:3006
-    husbil_gdf = gpd.read_file("data/transport/husbil.gpkg")#CRS: EPSG:3006
-    laddpl_gdf = gpd.read_file("data/transport/laddpl.gpkg")#CRS: EPSG:3006
-    mc_gdf = gpd.read_file("data/transport/mc.gpkg")#CRS: EPSG:3006
-    rorelseh_gdf = gpd.read_file("data/transport/rorelseh.gpkg")#CRS: EPSG:3006 
+    buss_gdf = gpd.read_file("./data/transport/buss.gpkg")#CRS: EPSG:3006
+    husbil_gdf = gpd.read_file("./data/transport/husbil.gpkg")#CRS: EPSG:3006
+    laddpl_gdf = gpd.read_file("./data/transport/laddpl.gpkg")#CRS: EPSG:3006
+    mc_gdf = gpd.read_file("./data/transport/mc.gpkg")#CRS: EPSG:3006
+    rorelseh_gdf = gpd.read_file("./data/transport/rorelseh.gpkg")#CRS: EPSG:3006 
     
-    cykelpumpar_gdf = gpd.read_file("data/transport/cykelpumpar.gpkg")#CRS: EPSG:3006 #  
-    parkeringsautomater_gdf = gpd.read_file("data/transport/parkeringsautomater.gpkg")#CRS: EPSG:3006    
+    cykelpumpar_gdf = gpd.read_file("./data/transport/cykelpumpar.gpkg")#CRS: EPSG:3006 #  
+    parkeringsautomater_gdf = gpd.read_file("./data/transport/parkeringsautomater.gpkg")#CRS: EPSG:3006    
     
     all_gdf = pd.concat([buss_gdf,husbil_gdf,laddpl_gdf,mc_gdf,rorelseh_gdf])
     return ( all_gdf, parkeringsautomater_gdf,cykelpumpar_gdf)

@@ -10,10 +10,10 @@ address_df = load_address_data()
 
 @st.experimental_memo(show_spinner=True)
 def load_schools_data():
-    f_school_gdf = gpd.read_file("data/schools/forskola.gpkg")#CRS: EPSG:3006
-    gr_school_gdf = gpd.read_file("data/schools/grundskola.gpkg")#CRS: EPSG:3006
-    gy_school_gdf = gpd.read_file("data/schools/gymnasieskola.gpkg")#CRS: EPSG:3006
-    s_school_gdf = gpd.read_file("data/schools/sarskola.gpkg")#CRS: EPSG:3006
+    f_school_gdf = gpd.read_file("./data/schools/forskola.gpkg")#CRS: EPSG:3006
+    gr_school_gdf = gpd.read_file("./data/schools/grundskola.gpkg")#CRS: EPSG:3006
+    gy_school_gdf = gpd.read_file("./data/schools/gymnasieskola.gpkg")#CRS: EPSG:3006
+    s_school_gdf = gpd.read_file("./data/schools/sarskola.gpkg")#CRS: EPSG:3006
     return pd.concat([ f_school_gdf,gr_school_gdf,gy_school_gdf,s_school_gdf])
     
 schools_gdf = load_schools_data()

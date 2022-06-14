@@ -27,5 +27,5 @@ st.sidebar.success("ÖKAB Data Science Team. ")
 "## Code"
 "https://github.com/oresundskraft/H22CityExpoHackathon.git"
 
-st.image("images/helsingborg.PNG")
+st.image("./images/helsingborg.PNG")
 
