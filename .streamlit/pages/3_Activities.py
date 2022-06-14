@@ -1,3 +1,4 @@
+import os
 import geopandas as gpd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -7,9 +8,14 @@ from address import load_address_data
 
 address_df = load_address_data()
 
+if os.name == 'nt':
+    file_path_prefix = '.'
+else:
+    file_path_prefix = os.getcwd() + '/.streamlit'
+    
 @st.experimental_memo(show_spinner=True)
 def load_play_data():
-    play_gdf = gpd.read_file("./data/lekplatser.gpkg")#CRS: EPSG:3006
+    play_gdf = gpd.read_file(file_path_prefix+"/data/lekplatser.gpkg")#CRS: EPSG:3006
     return play_gdf
     
 play_gdf = load_play_data()

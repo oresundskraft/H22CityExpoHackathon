@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import geopandas as gpd
 import plotly.express as px
@@ -7,9 +8,14 @@ from address import load_address_data
 
 address_df = load_address_data()
 
+if os.name == 'nt':
+    file_path_prefix = '.'
+else:
+    file_path_prefix = os.getcwd() + '/.streamlit'
+    
 @st.experimental_memo(show_spinner=True)
 def load_f_s_data():
-    f_s_gdf = gpd.read_file("./data/fastigheter_och_samfalligheter.gpkg")#CRS: EPSG:3006
+    f_s_gdf = gpd.read_file(file_path_prefix+"/data/fastigheter_och_samfalligheter.gpkg")#CRS: EPSG:3006
     f_s_gdf['Area'] = f_s_gdf['Area'].astype(np.float)
     f_s_gdf['lat'] = f_s_gdf['geometry'].centroid.y
     f_s_gdf['lng'] = f_s_gdf['geometry'].centroid.x

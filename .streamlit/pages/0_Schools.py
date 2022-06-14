@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import geopandas as gpd
 import plotly.express as px
@@ -8,12 +9,17 @@ from address import load_address_data
 
 address_df = load_address_data()
 
+if os.name == 'nt':
+    file_path_prefix = '.'
+else:
+    file_path_prefix = os.getcwd() + '/.streamlit'
+    
 @st.experimental_memo(show_spinner=True)
 def load_schools_data():
-    f_school_gdf = gpd.read_file("./data/schools/forskola.gpkg")#CRS: EPSG:3006
-    gr_school_gdf = gpd.read_file("./data/schools/grundskola.gpkg")#CRS: EPSG:3006
-    gy_school_gdf = gpd.read_file("./data/schools/gymnasieskola.gpkg")#CRS: EPSG:3006
-    s_school_gdf = gpd.read_file("./data/schools/sarskola.gpkg")#CRS: EPSG:3006
+    f_school_gdf = gpd.read_file(file_path_prefix+"/data/schools/forskola.gpkg")#CRS: EPSG:3006
+    gr_school_gdf = gpd.read_file(file_path_prefix+"/data/schools/grundskola.gpkg")#CRS: EPSG:3006
+    gy_school_gdf = gpd.read_file(file_path_prefix+"/data/schools/gymnasieskola.gpkg")#CRS: EPSG:3006
+    s_school_gdf = gpd.read_file(file_path_prefix+"/data/schools/sarskola.gpkg")#CRS: EPSG:3006
     return pd.concat([ f_school_gdf,gr_school_gdf,gy_school_gdf,s_school_gdf])
     
 schools_gdf = load_schools_data()
