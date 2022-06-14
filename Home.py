@@ -15,4 +15,4 @@ st.write("# Welcome to H22 Hackathon! 👋")
 st.markdown('### In collaboration with Öresundskraft AB & Helsingborg City.')
 
 st.markdown('For best experience, open this App on Large Screens')
-st.sidebar.success("ÖKAB Analytics Team")
+st.sidebar.success("ÖKAB Data Science Team")
