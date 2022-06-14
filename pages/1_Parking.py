@@ -64,7 +64,7 @@ if address_search:
     filtered_df  = filtered_df[(filtered_df['distance']<=selected_distance) ]
 
 fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,
-                        height=800,width=1024,
+                        height=600,width=600,
                         hover_name='Parkeringstyp',color='Parkeringstyp')
 fig.update_layout(mapbox_style="open-street-map")
 

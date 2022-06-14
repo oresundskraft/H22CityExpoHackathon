@@ -25,7 +25,7 @@ filtered_address = None
 
 address_search = st.sidebar.checkbox('Advanced search', value=False, key='school_address_search')
 if address_search:
-    streer_name = st.sidebar.text_input('Search addres', '')
+    streer_name = st.sidebar.text_input('Search addres', '', key="input_street_name")
     
     filtered_address_df = address_df.copy()
   
@@ -80,7 +80,7 @@ if address_search:
 
 
 fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,
-                        height=800,width=1024,
+                        height=600,width=600,
                         hover_name='namn',color='skoltyp')
 fig.update_layout(mapbox_style="open-street-map")
 #fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})

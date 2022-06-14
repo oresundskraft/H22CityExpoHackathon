@@ -65,7 +65,7 @@ if address_search:
     filtered_df  = filtered_df[(filtered_df['Lekplatskategori'].isin(multi_selected_category)) ]
 
 
-fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,height=800,width=1024,
+fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,height=600,width=600,
                         hover_name='Namn',color='Lekplatskategori')
 fig.update_layout(mapbox_style="open-street-map")
 
