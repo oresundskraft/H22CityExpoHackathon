@@ -12,7 +12,7 @@ st.set_page_config(
 
 st.write("# Welcome to H22 Hackathon! 👋")
 
-st.markup('## Helsingborg City & Öresundskraft AB')
+st.markdown('### In collaboration with Öresundskraft AB & Helsingborg City.')
 
-st.markup('## For best experience, open this App on Large Screens')
+st.markdown('For best experience, open this App on Large Screens')
 st.sidebar.success("ÖKAB Analytics Team")
