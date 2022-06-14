@@ -6,8 +6,10 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
 from haversine import haversine, Unit
-
 import streamlit as st
+from address import load_address_data
+
+address_df = load_address_data()
 
 @st.experimental_memo(show_spinner=True)
 def load_schools_data():
@@ -16,24 +18,15 @@ def load_schools_data():
     gy_school_gdf = gpd.read_file("data/schools/gymnasieskola.gpkg")#CRS: EPSG:3006
     s_school_gdf = gpd.read_file("data/schools/sarskola.gpkg")#CRS: EPSG:3006
     return pd.concat([ f_school_gdf,gr_school_gdf,gy_school_gdf,s_school_gdf])
-
-@st.experimental_memo(show_spinner=True)
-def load_address_data():
-    address_df = gpd.read_file("data/adresser.gpkg")#CRS: EPSG:3006
-    address_df['lat'] = address_df['geometry'].y
-    address_df['lng'] = address_df['geometry'].x    
-    return address_df
     
 schools_gdf = load_schools_data()
-address_df = load_address_data()
-
 filtered_df = schools_gdf.copy()
-
 filtered_df['lat'] = filtered_df['geometry'].y
 filtered_df['lng'] = filtered_df['geometry'].x  
+
 filtered_address = None
 
-address_search = st.sidebar.checkbox('Advanced search', value=False)
+address_search = st.sidebar.checkbox('Advanced search', value=False, key='school_address_search')
 if address_search:
     streer_name = st.sidebar.text_input('Search addres', '')
     

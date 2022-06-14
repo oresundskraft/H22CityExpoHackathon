@@ -6,9 +6,8 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
 from haversine import haversine, Unit
-
 import streamlit as st
-
+from address import load_address_data
 @st.experimental_memo(show_spinner=True)
 def load_transport_data():
 
@@ -28,12 +27,6 @@ def load_transport_data():
     # f_s_gdf['lng'] = f_s_gdf['geometry'].centroid.x
     return ( all_gdf, parkeringsautomater_gdf,cykelpumpar_gdf)
 
-@st.experimental_memo(show_spinner=True)
-def load_address_data():
-    address_df = gpd.read_file("data/adresser.gpkg")#CRS: EPSG:3006
-    address_df['lat'] = address_df['geometry'].y
-    address_df['lng'] = address_df['geometry'].x    
-    return address_df
     
 transport_gdf = load_transport_data()
 address_df = load_address_data()
@@ -43,7 +36,7 @@ filtered_df['lat'] = filtered_df['geometry'].y
 filtered_df['lng'] = filtered_df['geometry'].x  
 
 
-address_search = st.sidebar.checkbox('Advanced search', value=False)
+address_search = st.sidebar.checkbox('Advanced search', value=False, key='parking_address_search')
 if address_search:
     streer_name = st.sidebar.text_input('Search addres', '')
     

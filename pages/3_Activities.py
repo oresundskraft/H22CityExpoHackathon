@@ -6,21 +6,14 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
 from haversine import haversine, Unit
-
 import streamlit as st
+from address import load_address_data
 
 @st.experimental_memo(show_spinner=True)
 def load_play_data():
     play_gdf = gpd.read_file("data/lekplatser.gpkg")#CRS: EPSG:3006
 
     return play_gdf
-
-@st.experimental_memo(show_spinner=True)
-def load_address_data():
-    address_df = gpd.read_file("data/adresser.gpkg")#CRS: EPSG:3006
-    address_df['lat'] = address_df['geometry'].y
-    address_df['lng'] = address_df['geometry'].x    
-    return address_df
     
 play_gdf = load_play_data()
 address_df = load_address_data()
@@ -34,7 +27,7 @@ filtered_address = None
 filtered_df.fillna('missing', inplace=True)
 
 
-address_search = st.sidebar.checkbox('Advanced search', value=False)
+address_search = st.sidebar.checkbox('Advanced search', value=False, key='activities_address_search')
 if address_search:
     streer_name = st.sidebar.text_input('Search addres', '')
     
