@@ -89,7 +89,8 @@ if address_search:
 #fig.update_geos(fitbounds="locations", visible=False)
 
 
-fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,height=800,width=800,
+fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,
+                        height=800,width=1024,
                         hover_name='namn',color='skoltyp')
 fig.update_layout(mapbox_style="open-street-map")
 #fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})

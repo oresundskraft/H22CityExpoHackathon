@@ -78,7 +78,7 @@ fig = px.choropleth_mapbox(filtered_df,
                    geojson=filtered_df.geometry,
                    locations=filtered_df.index,
                    color="Area",
-                   height=800,width=800,
+                   height=800,width=1024,
                    mapbox_style="carto-positron",
                    opacity=0.5,
                    zoom=11, center = {"lat": float(filtered_address['lat']), "lon": float(filtered_address['lng'])},)
