@@ -36,7 +36,7 @@ install plotly
 ```
 conda install -c plotly plotly=5.8.2
 ```
-install plotly
+install haversine
 ```
 pip install haversine
 ```
