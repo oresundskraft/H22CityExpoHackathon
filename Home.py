@@ -12,4 +12,4 @@ st.set_page_config(
 
 st.write("# Welcome to H22 Hackathon! 👋")
 
-st.sidebar.success("Select a options below.")
+st.sidebar.success("ÖKAB Analytics Team")
