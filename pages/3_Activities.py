@@ -1,31 +1,25 @@
-
-import numpy as np
-import pandas as pd
 import geopandas as gpd
-import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
-from haversine import haversine, Unit
+from haversine import haversine
 import streamlit as st
 from address import load_address_data
+
+address_df = load_address_data()
 
 @st.experimental_memo(show_spinner=True)
 def load_play_data():
     play_gdf = gpd.read_file("data/lekplatser.gpkg")#CRS: EPSG:3006
-
     return play_gdf
     
 play_gdf = load_play_data()
-address_df = load_address_data()
 
 filtered_df = play_gdf.copy()
-
 filtered_df['lat'] = filtered_df['geometry'].y
 filtered_df['lng'] = filtered_df['geometry'].x  
 filtered_address = None
 
 filtered_df.fillna('missing', inplace=True)
-
 
 address_search = st.sidebar.checkbox('Advanced search', value=False, key='activities_address_search')
 if address_search:
@@ -71,22 +65,10 @@ if address_search:
     filtered_df  = filtered_df[(filtered_df['Lekplatskategori'].isin(multi_selected_category)) ]
 
 
-# plot base map
-# fig = px.choropleth_mapbox(filtered_df,
-#                    geojson=filtered_df.geometry,
-#                    locations=filtered_df.index,
-#                    color="Agartyp",
-#                    height=800,width=800,
-#                    mapbox_style="carto-positron",
-#                    opacity=0.5,
-#                    zoom=12, center = {"lat": float(filtered_address['lat']), "lon": float(filtered_address['lng'])},)
-#fig.update_geos(fitbounds="locations", visible=False)
-
-
 fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,height=800,width=1024,
                         hover_name='Namn',color='Lekplatskategori')
 fig.update_layout(mapbox_style="open-street-map")
-#fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+
 fig.update_traces(marker={'size': 15,'opacity':0.8})
 if address_search:
     fig.add_trace(go.Scattermapbox(

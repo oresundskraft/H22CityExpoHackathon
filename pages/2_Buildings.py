@@ -1,13 +1,11 @@
-
 import numpy as np
-import pandas as pd
 import geopandas as gpd
-import matplotlib.pyplot as plt
 import plotly.express as px
-import plotly.graph_objects as go
-from haversine import haversine, Unit
+from haversine import haversine
 import streamlit as st
 from address import load_address_data
+
+address_df = load_address_data()
 
 @st.experimental_memo(show_spinner=True)
 def load_f_s_data():
@@ -19,15 +17,12 @@ def load_f_s_data():
 
     
 f_s_gdf = load_f_s_data()
-address_df = load_address_data()
 
 streer_name = st.sidebar.text_input('Search addres', '')
 
 filtered_address_df = address_df.copy()
-
 filtered_address_df = filtered_address_df[filtered_address_df['Adress'].str.lower().str.contains(streer_name.lower())]
 filtered_address_df = filtered_address_df.reset_index(drop=True)
-
 selected_address = str(st.sidebar.selectbox('Address?',
                                         filtered_address_df['Adress']+'_'+filtered_address_df['Postnummer']+'_'+filtered_address_df['Stad'],
                                         key='building_address_search'))

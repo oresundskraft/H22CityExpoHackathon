@@ -1,11 +1,8 @@
-
-import numpy as np
 import pandas as pd
 import geopandas as gpd
-import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
-from haversine import haversine, Unit
+from haversine import haversine
 import streamlit as st
 from address import load_address_data
 
