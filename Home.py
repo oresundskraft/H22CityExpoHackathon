@@ -10,9 +10,20 @@ st.set_page_config(
     page_icon="👋",
 )
 
-st.write("# Welcome to H22 Hackathon! 👋")
+st.sidebar.success("App Version: 0.0.1,")
+st.sidebar.success("ÖKAB Data Science Team. ")
 
-st.markdown('### In collaboration with Öresundskraft AB & Helsingborg City.')
+"# Welcome to Helsingborg City H22 City Expo Hackathon! 👋"
 
-st.markdown('For best experience, open this App on Large Screens')
-st.sidebar.success("App Version: 0.0.1,\n ÖKAB Data Science Team. ")
+
+
+
+
+"## Powered by Helsingborg City Open Data"
+"https://helsingborg.io/dataportal/"
+
+'For best experience, open this App on Large Screens'
+
+"## Code"
+"https://github.com/oresundskraft/H22CityExpoHackathon.git"
+
