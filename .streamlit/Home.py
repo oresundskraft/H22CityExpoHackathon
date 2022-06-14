@@ -30,6 +30,7 @@ if os.name == 'nt':
     image_file_path_prefix = '.'
 else:
     image_file_path_prefix = os.getcwd() + '/.streamlit'
+    
 st.write(image_file_path_prefix)
 st.write(os.name)
 st.image(image_file_path_prefix+"/images/helsingborg.PNG")
