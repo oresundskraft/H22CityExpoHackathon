@@ -107,9 +107,6 @@ if len(filtered_df)>0:
 
     st.plotly_chart(fig)
 
-    if address_search:
-        st.write(filtered_df)
-
 else:
     "# No results to display!"
     

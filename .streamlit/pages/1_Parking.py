@@ -109,9 +109,6 @@ if len(filtered_df)>0:
 
     st.plotly_chart(fig)
 
-    if address_search:
-        st.dataframe(filtered_df[['Namn','Agartyp','Avgift','Status','Parkeringstyp']])
-
 else:
     "# No results to display!"
     

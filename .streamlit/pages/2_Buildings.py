@@ -52,23 +52,14 @@ filtered_df['distance'] = filtered_df.apply(dist, axis=1)
 filtered_df = filtered_df.sort_values(by='distance')
 
 
-#FILTER 1
 detail_types = filtered_df['detaljtyp'].unique()
 selected_d_type = st.sidebar.selectbox('detaljtyp', detail_types, key='select_detail_types')
 if 'select_detail_types' not in st.session_state:
     st.session_state['select_detail_types'] = selected_d_type
 
-#Apply filters
 filtered_df  = filtered_df[filtered_df['detaljtyp']==selected_d_type]
 filtered_df  = filtered_df[(filtered_df['distance']<=selected_distance) ]
 
-# fig, ax = plt.subplots()
-# filtered_df.head(show_results).plot(ax=ax, color='lightgray')
-# filtered_df.head(show_results).plot(column='Area', ax=ax, cmap='viridis')
-#ax.set_axis_off()
-#st.pyplot(fig)
-
-# plot base map
 fig = px.choropleth_mapbox(filtered_df,
                    geojson=filtered_df.geometry,
                    locations=filtered_df.index,
