@@ -62,7 +62,6 @@ if address_search:
         st.session_state['distance'] = selected_distance
     filtered_df  = filtered_df[(filtered_df['distance']<=selected_distance) ]
 
-    #FILTER 1
     categories = play_gdf['Lekplatskategori'].unique()
     multi_selected_category = st.sidebar.multiselect('Lekplatskategori', categories, default=['narlekplats'], key='multi_select_category')
 
@@ -91,7 +90,6 @@ if len(filtered_df)>0:
                     "layers": [
                         {"source": layers, "color": "PaleTurquoise", "type": "fill", "opacity":.3},
                         {"source": layers, "color": "black", "type": "line", "opacity":.6}
-
                     ]
                 }
             )        
@@ -106,9 +104,6 @@ if len(filtered_df)>0:
                    )
 
     st.plotly_chart(fig)
-
-    if address_search:
-        st.write(filtered_df)
 
 else:
     "# No results to display!"
