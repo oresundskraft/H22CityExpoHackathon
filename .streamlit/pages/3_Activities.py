@@ -77,6 +77,7 @@ fig.update_layout(mapbox_style="open-street-map")
 fig.update_traces(marker={'size': 15,'opacity':0.8})
 if address_search:
     fig.add_trace(go.Scattermapbox(
+        name = filtered_address['Adress'].values[0],        
         lon = [float(filtered_address['lng']) ],
         lat = [float(filtered_address['lat']) ],
         hovertext=filtered_address['Adress'].values[0],  
