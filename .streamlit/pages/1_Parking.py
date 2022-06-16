@@ -1,3 +1,5 @@
+import os
+import pandas as pd
 import geopandas as gpd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -7,21 +9,33 @@ from address import load_address_data
 
 address_df = load_address_data()
 
-@st.experimental_memo(show_spinner=True)
-def load_play_data():
-    play_gdf = gpd.read_file("data/lekplatser.gpkg")#CRS: EPSG:3006
-    return play_gdf
+if os.name == 'nt':
+    file_path_prefix = '.'
+else:
+    file_path_prefix = os.getcwd() + '/.streamlit'
     
-play_gdf = load_play_data()
+@st.experimental_memo(show_spinner=True)
+def load_transport_data():
+    buss_gdf = gpd.read_file(file_path_prefix+"/data/transport/buss.gpkg")#CRS: EPSG:3006
+    husbil_gdf = gpd.read_file(file_path_prefix+"/data/transport/husbil.gpkg")#CRS: EPSG:3006
+    laddpl_gdf = gpd.read_file(file_path_prefix+"/data/transport/laddpl.gpkg")#CRS: EPSG:3006
+    mc_gdf = gpd.read_file(file_path_prefix+"/data/transport/mc.gpkg")#CRS: EPSG:3006
+    rorelseh_gdf = gpd.read_file(file_path_prefix+"/data/transport/rorelseh.gpkg")#CRS: EPSG:3006 
+    
+    cykelpumpar_gdf = gpd.read_file(file_path_prefix+"/data/transport/cykelpumpar.gpkg")#CRS: EPSG:3006 #  
+    parkeringsautomater_gdf = gpd.read_file(file_path_prefix+"/data/transport/parkeringsautomater.gpkg")#CRS: EPSG:3006    
+    
+    all_gdf = pd.concat([buss_gdf,husbil_gdf,laddpl_gdf,mc_gdf,rorelseh_gdf])
+    return ( all_gdf, parkeringsautomater_gdf,cykelpumpar_gdf)
 
-filtered_df = play_gdf.copy()
+    
+transport_gdf = load_transport_data()
+
+filtered_df = transport_gdf[0].copy()
 filtered_df['lat'] = filtered_df['geometry'].y
 filtered_df['lng'] = filtered_df['geometry'].x  
-filtered_address = None
 
-filtered_df.fillna('missing', inplace=True)
-
-address_search = st.sidebar.checkbox('Advanced search', value=False, key='activities_address_search')
+address_search = st.sidebar.checkbox('Advanced search', value=False, key='parking_address_search')
 if address_search:
     streer_name = st.sidebar.text_input('Search addres', '')
     
@@ -34,8 +48,8 @@ if address_search:
         filtered_address_df['Adress']+'_'+filtered_address_df['Postnummer']+'_'+filtered_address_df['Stad'],key='address'))
 
     if 'address' not in st.session_state:
-        st.session_state['address'] = selected_address    
-        
+        st.session_state['address'] = selected_address   
+         
     selected_address_split = selected_address.split('_')
     if len(selected_address_split) > 1:
         filtered_address = filtered_address_df[(filtered_address_df['Adress']==selected_address_split[0]) & 
@@ -44,7 +58,6 @@ if address_search:
         filtered_address = filtered_address.head(1)
     else:
         filtered_address = address_df.head(1)
-        
 
     def dist(row):
         return haversine((row['lat'],row['lng']),(filtered_address['lat'],filtered_address['lng']))   
@@ -56,31 +69,23 @@ if address_search:
         st.session_state['distance'] = selected_distance
     filtered_df  = filtered_df[(filtered_df['distance']<=selected_distance) ]
 
-    #FILTER 1
-    categories = filtered_df['Lekplatskategori'].unique()
-    multi_selected_category = st.sidebar.multiselect('Lekplatskategori', categories, default=['narlekplats'], key='multi_select_category')
-
-    if 'multi_select_category' not in st.session_state:
-        st.session_state['multi_select_category'] = multi_selected_category    
-    filtered_df  = filtered_df[(filtered_df['Lekplatskategori'].isin(multi_selected_category)) ]
-
-
-fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,height=600,width=600,
-                        hover_name='Namn',color='Lekplatskategori')
+fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,
+                        height=600,width=600,
+                        hover_name='Parkeringstyp',color='Parkeringstyp')
 fig.update_layout(mapbox_style="open-street-map")
 
 fig.update_traces(marker={'size': 15,'opacity':0.8})
 if address_search:
     fig.add_trace(go.Scattermapbox(
         #mode = "markers",
-        lon = [float(filtered_address['lng']) ],
-        lat = [float(filtered_address['lat']) ],
+        lon = [float(filtered_address['lng'])],
+        lat = [float(filtered_address['lat'])],
         marker = {'size': 15}))
 
 st.plotly_chart(fig)
 
 if address_search:
-    st.write(filtered_df)
+    st.dataframe(filtered_df[['Namn','Agartyp','Avgift','Status','Parkeringstyp']])
 
 
     

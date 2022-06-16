@@ -1,8 +1,5 @@
 
-import pandas as pd
-import geopandas as gpd
-import matplotlib.pyplot as plt
-
+import os
 import streamlit as st
 
 st.set_page_config(
@@ -27,5 +24,12 @@ st.sidebar.success("ÖKAB Data Science Team. ")
 "## Code"
 "https://github.com/oresundskraft/H22CityExpoHackathon.git"
 
-st.image("images/helsingborg.PNG")
+
+
+if os.name == 'nt':
+    image_file_path_prefix = '.'
+else:
+    image_file_path_prefix = os.getcwd() + '/.streamlit'
+    
+st.image(image_file_path_prefix+"/images/helsingborg.PNG")
 

@@ -1,4 +1,4 @@
-import pandas as pd
+import os
 import geopandas as gpd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -8,24 +8,28 @@ from address import load_address_data
 
 address_df = load_address_data()
 
-@st.experimental_memo(show_spinner=True)
-def load_schools_data():
-    f_school_gdf = gpd.read_file("data/schools/forskola.gpkg")#CRS: EPSG:3006
-    gr_school_gdf = gpd.read_file("data/schools/grundskola.gpkg")#CRS: EPSG:3006
-    gy_school_gdf = gpd.read_file("data/schools/gymnasieskola.gpkg")#CRS: EPSG:3006
-    s_school_gdf = gpd.read_file("data/schools/sarskola.gpkg")#CRS: EPSG:3006
-    return pd.concat([ f_school_gdf,gr_school_gdf,gy_school_gdf,s_school_gdf])
+if os.name == 'nt':
+    file_path_prefix = '.'
+else:
+    file_path_prefix = os.getcwd() + '/.streamlit'
     
-schools_gdf = load_schools_data()
-filtered_df = schools_gdf.copy()
+@st.experimental_memo(show_spinner=True)
+def load_play_data():
+    play_gdf = gpd.read_file(file_path_prefix+"/data/lekplatser.gpkg")#CRS: EPSG:3006
+    return play_gdf
+    
+play_gdf = load_play_data()
+
+filtered_df = play_gdf.copy()
 filtered_df['lat'] = filtered_df['geometry'].y
 filtered_df['lng'] = filtered_df['geometry'].x  
-
 filtered_address = None
 
-address_search = st.sidebar.checkbox('Advanced search', value=False, key='school_address_search')
+filtered_df.fillna('missing', inplace=True)
+
+address_search = st.sidebar.checkbox('Advanced search', value=False, key='activities_address_search')
 if address_search:
-    streer_name = st.sidebar.text_input('Search addres', '', key="input_street_name")
+    streer_name = st.sidebar.text_input('Search addres', '')
     
     filtered_address_df = address_df.copy()
   
@@ -59,31 +63,18 @@ if address_search:
     filtered_df  = filtered_df[(filtered_df['distance']<=selected_distance) ]
 
     #FILTER 1
-    huvudmans = filtered_df['huvudman'].unique()
-    multi_selected_huvudman = st.sidebar.multiselect('huvudman', huvudmans, default=['Fristående','Helsingborgs stads skolor'], key='multi_select_huvudman')
+    categories = filtered_df['Lekplatskategori'].unique()
+    multi_selected_category = st.sidebar.multiselect('Lekplatskategori', categories, default=['narlekplats'], key='multi_select_category')
 
-    if 'multi_select_huvudman' not in st.session_state:
-        st.session_state['multi_select_huvudman'] = multi_selected_huvudman    
-    filtered_df  = filtered_df[(filtered_df['huvudman'].isin(multi_selected_huvudman)) ]
-
-
-# plot base map
-# fig = px.choropleth_mapbox(filtered_df,
-#                    geojson=filtered_df.geometry,
-#                    locations=filtered_df.index,
-#                    color="Agartyp",
-#                    height=800,width=800,
-#                    mapbox_style="carto-positron",
-#                    opacity=0.5,
-#                    zoom=12, center = {"lat": float(filtered_address['lat']), "lon": float(filtered_address['lng'])},)
-#fig.update_geos(fitbounds="locations", visible=False)
+    if 'multi_select_category' not in st.session_state:
+        st.session_state['multi_select_category'] = multi_selected_category    
+    filtered_df  = filtered_df[(filtered_df['Lekplatskategori'].isin(multi_selected_category)) ]
 
 
-fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,
-                        height=600,width=600,
-                        hover_name='namn',color='skoltyp')
+fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,height=600,width=600,
+                        hover_name='Namn',color='Lekplatskategori')
 fig.update_layout(mapbox_style="open-street-map")
-#fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+
 fig.update_traces(marker={'size': 15,'opacity':0.8})
 if address_search:
     fig.add_trace(go.Scattermapbox(
