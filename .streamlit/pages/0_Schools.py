@@ -65,7 +65,7 @@ if address_search:
     filtered_df  = filtered_df[(filtered_df['distance']<=selected_distance) ]
 
     #FILTER 1
-    huvudmans = filtered_df['huvudman'].unique()
+    huvudmans = schools_gdf['huvudman'].unique()
     multi_selected_huvudman = st.sidebar.multiselect('huvudman', huvudmans, default=['Fristående','Helsingborgs stads skolor'], key='multi_select_huvudman')
 
     if 'multi_select_huvudman' not in st.session_state:
@@ -84,29 +84,32 @@ if address_search:
 #                    zoom=12, center = {"lat": float(filtered_address['lat']), "lon": float(filtered_address['lng'])},)
 #fig.update_geos(fitbounds="locations", visible=False)
 
+st.write()
+if len(filtered_df)>0:
+    fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,
+                            height=600,width=600,
+                            hover_name='namn',color='skoltyp')
+    fig.update_layout(mapbox_style="open-street-map")
+    #fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    fig.update_traces(marker={'size': 15,'opacity':0.8})
 
-fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,
-                        height=600,width=600,
-                        hover_name='namn',color='skoltyp')
-fig.update_layout(mapbox_style="open-street-map")
-#fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-fig.update_traces(marker={'size': 15,'opacity':0.8})
 
+    if address_search:
+        fig.add_trace(go.Scattermapbox(
+            name = filtered_address['Adress'].values[0],
+            lon = [float(filtered_address['lng']) ],
+            lat = [float(filtered_address['lat']) ],
+            hovertext=filtered_address['Adress'].values[0],  
+            hoverinfo='text',                            
+            marker=dict(size=20, color='black'))         
+                    )
 
-if address_search:
-    fig.add_trace(go.Scattermapbox(
-        name = filtered_address['Adress'].values[0],
-        lon = [float(filtered_address['lng']) ],
-        lat = [float(filtered_address['lat']) ],
-        hovertext=filtered_address['Adress'].values[0],  
-        hoverinfo='text',                            
-        marker=dict(size=20, color='black'))         
-                  )
+    st.plotly_chart(fig)
 
-st.plotly_chart(fig)
-
-if address_search:
-    st.write(filtered_df)
+    if address_search:
+        st.write(filtered_df)
+else:
+    "# No results to display!"
 
 
     

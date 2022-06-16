@@ -62,33 +62,36 @@ if address_search:
     filtered_df  = filtered_df[(filtered_df['distance']<=selected_distance) ]
 
     #FILTER 1
-    categories = filtered_df['Lekplatskategori'].unique()
+    categories = play_gdf['Lekplatskategori'].unique()
     multi_selected_category = st.sidebar.multiselect('Lekplatskategori', categories, default=['narlekplats'], key='multi_select_category')
 
     if 'multi_select_category' not in st.session_state:
         st.session_state['multi_select_category'] = multi_selected_category    
     filtered_df  = filtered_df[(filtered_df['Lekplatskategori'].isin(multi_selected_category)) ]
 
+if len(filtered_df)>0:
+    fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,height=600,width=600,
+                            hover_name='Namn',color='Lekplatskategori')
+    fig.update_layout(mapbox_style="open-street-map")
 
-fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,height=600,width=600,
-                        hover_name='Namn',color='Lekplatskategori')
-fig.update_layout(mapbox_style="open-street-map")
+    fig.update_traces(marker={'size': 15,'opacity':0.8})
+    if address_search:
+        fig.add_trace(go.Scattermapbox(
+            name = filtered_address['Adress'].values[0],        
+            lon = [float(filtered_address['lng']) ],
+            lat = [float(filtered_address['lat']) ],
+            hovertext=filtered_address['Adress'].values[0],  
+            hoverinfo='text',                            
+            marker=dict(size=20, color='black'))         
+                    )
 
-fig.update_traces(marker={'size': 15,'opacity':0.8})
-if address_search:
-    fig.add_trace(go.Scattermapbox(
-        name = filtered_address['Adress'].values[0],        
-        lon = [float(filtered_address['lng']) ],
-        lat = [float(filtered_address['lat']) ],
-        hovertext=filtered_address['Adress'].values[0],  
-        hoverinfo='text',                            
-        marker=dict(size=20, color='black'))         
-                  )
+    st.plotly_chart(fig)
 
-st.plotly_chart(fig)
+    if address_search:
+        st.write(filtered_df)
 
-if address_search:
-    st.write(filtered_df)
+else:
+    "# No results to display!"
 
 
     
