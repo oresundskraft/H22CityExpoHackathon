@@ -17,9 +17,7 @@ else:
     
 @st.experimental_memo(show_spinner=True)
 def load_transport_data(): 
-    cykelpumpar_gdf = gpd.read_file(file_path_prefix+"/data/transport/cykelpumpar.gpkg")#CRS: EPSG:3006 #  
     parkeringsautomater_gdf = gpd.read_file(file_path_prefix+"/data/transport/parkeringsautomater.gpkg")#CRS: EPSG:3006    
-
     return parkeringsautomater_gdf
 
     
