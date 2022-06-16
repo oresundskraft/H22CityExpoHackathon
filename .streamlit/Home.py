@@ -7,10 +7,10 @@ st.set_page_config(
     page_icon="👋",
 )
 
-st.sidebar.success("App Version: 0.0.1,")
+st.sidebar.success("App Version: 1.0,")
 st.sidebar.success("ÖKAB Data Science Team. ")
 
-"# Welcome to Helsingborg City H22 City Expo Hackathon! 👋"
+"# H22 City Expo Hackathon! 👋"
 
 
 
