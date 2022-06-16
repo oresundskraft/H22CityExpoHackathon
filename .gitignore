@@ -5,3 +5,4 @@ requirements_all.txt
 ./__pycache__
 __pycache__
 __pycache__/*
+_test.py

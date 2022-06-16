@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 from haversine import haversine
 import streamlit as st
 from address import load_address_data
+from util import geodesic_point_buffer
 
 address_df = load_address_data()
 
@@ -71,11 +72,30 @@ if address_search:
 
 if len(filtered_df)>0:
     fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,height=600,width=600,
-                            hover_name='Namn',color='Lekplatskategori')
-    fig.update_layout(mapbox_style="open-street-map")
-
-    fig.update_traces(marker={'size': 15,'opacity':0.8})
+                            hover_name='Namn',color='Lekplatskategori').update_layout(mapbox={"style": "carto-positron"})#(mapbox_style="open-street-map")
     if address_search:
+
+        coords=geodesic_point_buffer(float(filtered_address['lat']), float(filtered_address['lng']), selected_distance)
+        layers=dict(type = 'FeatureCollection',
+                            features=[{
+                                "id":"7", 
+                                    "type": "Feature",
+                                    "properties":{},
+                                    "geometry": {"type": "LineString",
+                                                "coordinates": coords
+                                                }
+                                    }]
+                            )
+        fig.update_layout(
+                mapbox={
+                    "layers": [
+                        {"source": layers, "color": "PaleTurquoise", "type": "fill", "opacity":.3},
+                        {"source": layers, "color": "black", "type": "line", "opacity":.6}
+
+                    ]
+                }
+            )        
+              
         fig.add_trace(go.Scattermapbox(
             name = filtered_address['Adress'].values[0],        
             lon = [float(filtered_address['lng']) ],
@@ -83,7 +103,7 @@ if len(filtered_df)>0:
             hovertext=filtered_address['Adress'].values[0],  
             hoverinfo='text',                            
             marker=dict(size=20, color='black'))         
-                    )
+                   )
 
     st.plotly_chart(fig)
 
@@ -92,6 +112,9 @@ if len(filtered_df)>0:
 
 else:
     "# No results to display!"
+    
+
+
 
 
     

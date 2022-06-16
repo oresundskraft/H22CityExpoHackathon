@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 from haversine import haversine
 import streamlit as st
 from address import load_address_data
+from util import geodesic_point_buffer
 
 address_df = load_address_data()
 
@@ -95,6 +96,26 @@ if len(filtered_df)>0:
 
 
     if address_search:
+        coords=geodesic_point_buffer(float(filtered_address['lat']), float(filtered_address['lng']), selected_distance)
+        layers=dict(type = 'FeatureCollection',
+                            features=[{
+                                "id":"7", 
+                                    "type": "Feature",
+                                    "properties":{},
+                                    "geometry": {"type": "LineString",
+                                                "coordinates": coords
+                                                }
+                                    }]
+                            )
+        fig.update_layout(
+                mapbox={
+                    "layers": [
+                        {"source": layers, "color": "PaleTurquoise", "type": "fill", "opacity":.3},
+                        {"source": layers, "color": "black", "type": "line", "opacity":.6}
+
+                    ]
+                }
+            )          
         fig.add_trace(go.Scattermapbox(
             name = filtered_address['Adress'].values[0],
             lon = [float(filtered_address['lng']) ],
