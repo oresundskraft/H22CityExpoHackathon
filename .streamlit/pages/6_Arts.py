@@ -17,22 +17,16 @@ else:
     
 @st.experimental_memo(show_spinner=True)
 def load_transport_data(): 
-    parkeringsautomater_gdf = gpd.read_file(file_path_prefix+"/data/transport/parkeringsautomater.gpkg")#CRS: EPSG:3006    
-    return parkeringsautomater_gdf
+    konstverk_och_fontaner_gdf = gpd.read_file(file_path_prefix+"/data/konstverk_och_fontaner.gpkg")#CRS: EPSG:3006    
+    return konstverk_och_fontaner_gdf
 
     
-parking_terminals_gdf = load_transport_data()
+konstverk_och_fontaner_gdf = load_transport_data()
 
-filtered_df = parking_terminals_gdf.copy()
+filtered_df = konstverk_och_fontaner_gdf.copy()
 #st.write(filtered_df)
 filtered_df['lat'] = filtered_df['geometry'].y
 filtered_df['lng'] = filtered_df['geometry'].x  
-
-active_parking_terminal = st.sidebar.checkbox(f'Only Active Parking Terminals', value=False, key='parking_terminal_active')
-
-if active_parking_terminal:
-    filtered_df  = filtered_df[(filtered_df['Status']=='aktiv') ]
-    
 
 address_search = st.sidebar.checkbox('Advanced search', value=False, key='parking_address_search')
 if address_search:
@@ -68,21 +62,13 @@ if address_search:
         st.session_state['distance'] = selected_distance
     filtered_df  = filtered_df[(filtered_df['distance']<=selected_distance) ]
     
-    #Avgbeltid_vard_helg
-    # selected_weekday_time_range = str(st.sidebar.selectbox('Weekdays',
-    #     filtered_df['Avgbeltid_vardag'].unique(), key='selection_weekday'))
 
-    # if 'selection_weekday' not in st.session_state:
-    #     st.session_state['selection_weekday'] = selected_weekday_time_range    
-    # filtered_df  = filtered_df[(filtered_df['Avgbeltid_vardag']==selected_distance) ]
-    
-    
-    
+filtered_df = filtered_df.fillna(value='missing')
     
 if len(filtered_df)>0:    
     fig = px.scatter_mapbox(filtered_df, lat="lat", lon="lng", zoom=11,
                             height=600,width=600,
-                            hover_name='Namn',color='Taxa_avgbeltid')
+                            hover_name='Namn',color='Typ')
     fig.update_layout(mapbox_style="open-street-map")
 
     fig.update_traces(marker={'size': 15,'opacity':0.8})
