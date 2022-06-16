@@ -50,7 +50,6 @@ if address_search:
         filtered_address = filtered_address.head(1)
     else:
         filtered_address = address_df.head(1)
-        
 
     def dist(row):
         return haversine((row['lat'],row['lng']),(filtered_address['lat'],filtered_address['lng']))   
@@ -78,10 +77,12 @@ fig.update_layout(mapbox_style="open-street-map")
 fig.update_traces(marker={'size': 15,'opacity':0.8})
 if address_search:
     fig.add_trace(go.Scattermapbox(
-        #mode = "markers",
         lon = [float(filtered_address['lng']) ],
         lat = [float(filtered_address['lat']) ],
-        marker = {'size': 15}))
+        hovertext=filtered_address['Adress'].values[0],  
+        hoverinfo='text',                            
+        marker=dict(size=20, color='black'))         
+                  )
 
 st.plotly_chart(fig)
 
