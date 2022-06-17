@@ -2,6 +2,7 @@ from functools import partial
 import pyproj
 from shapely.ops import transform
 from shapely.geometry import Point
+import os
 
 proj_wgs84 = pyproj.Proj('+proj=longlat +datum=WGS84')
 
@@ -16,3 +17,10 @@ def geodesic_point_buffer(lat, lon, km):
         proj_wgs84)
     buf = Point(0, 0).buffer(km * 1000)  # distance in metres
     return transform(project, buf).exterior.coords[:]
+
+def file_path():
+    if os.name == 'nt':
+        return '.'
+    return os.getcwd() + '/.streamlit'
+
+    
