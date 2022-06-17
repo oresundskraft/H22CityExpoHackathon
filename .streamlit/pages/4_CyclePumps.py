@@ -1,25 +1,15 @@
-import os
-import pandas as pd
 import geopandas as gpd
 import plotly.express as px
-import plotly.graph_objects as go
-from haversine import haversine
 import streamlit as st
 from address import load_address_data
-from util import geodesic_point_buffer
+from util import file_path
 
 address_df = load_address_data()
-
-if os.name == 'nt':
-    file_path_prefix = '.'
-else:
-    file_path_prefix = os.getcwd() + '/.streamlit'
     
 @st.experimental_memo(show_spinner=True)
 def load_transport_data(): 
-    cykelpumpar_gdf = gpd.read_file(file_path_prefix+"/data/transport/cykelpumpar.gpkg")#CRS: EPSG:3006 #  
+    cykelpumpar_gdf = gpd.read_file(file_path() + "/data/transport/cykelpumpar.gpkg")#CRS: EPSG:3006 #  
     return cykelpumpar_gdf
-
     
 cykelpumpar_gdf = load_transport_data()
 

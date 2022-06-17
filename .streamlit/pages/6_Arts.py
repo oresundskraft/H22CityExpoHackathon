@@ -1,25 +1,17 @@
-import os
-import pandas as pd
 import geopandas as gpd
 import plotly.express as px
 import plotly.graph_objects as go
 from haversine import haversine
 import streamlit as st
 from address import load_address_data
-from util import geodesic_point_buffer
+from util import geo_circle_coordinates, file_path
 
 address_df = load_address_data()
-
-if os.name == 'nt':
-    file_path_prefix = '.'
-else:
-    file_path_prefix = os.getcwd() + '/.streamlit'
-    
+  
 @st.experimental_memo(show_spinner=True)
 def load_transport_data(): 
-    konstverk_och_fontaner_gdf = gpd.read_file(file_path_prefix+"/data/konstverk_och_fontaner.gpkg")#CRS: EPSG:3006    
+    konstverk_och_fontaner_gdf = gpd.read_file(file_path() + "/data/konstverk_och_fontaner.gpkg")#CRS: EPSG:3006    
     return konstverk_och_fontaner_gdf
-
     
 konstverk_och_fontaner_gdf = load_transport_data()
 
@@ -73,8 +65,8 @@ if len(filtered_df)>0:
 
     fig.update_traces(marker={'size': 15,'opacity':0.8})
     if address_search:
-        coords=geodesic_point_buffer(float(filtered_address['lat']), float(filtered_address['lng']), selected_distance)
-        layers=dict(type = 'FeatureCollection',
+        coords = geo_circle_coordinates(float(filtered_address['lat']), float(filtered_address['lng']), selected_distance)
+        layers = dict(type = 'FeatureCollection',
                             features=[{
                                 "id":"7", 
                                     "type": "Feature",

@@ -1,22 +1,16 @@
-import os
 import geopandas as gpd
 import plotly.express as px
 import plotly.graph_objects as go
 from haversine import haversine
 import streamlit as st
 from address import load_address_data
-from util import geodesic_point_buffer
+from util import geo_circle_coordinates, file_path
 
 address_df = load_address_data()
 
-if os.name == 'nt':
-    file_path_prefix = '.'
-else:
-    file_path_prefix = os.getcwd() + '/.streamlit'
-    
 @st.experimental_memo(show_spinner=True)
 def load_play_data():
-    play_gdf = gpd.read_file(file_path_prefix+"/data/lekplatser.gpkg")#CRS: EPSG:3006
+    play_gdf = gpd.read_file(file_path()+"/data/lekplatser.gpkg")#CRS: EPSG:3006
     return play_gdf
     
 play_gdf = load_play_data()
@@ -74,8 +68,8 @@ if len(filtered_df)>0:
                             hover_name='Namn',color='Lekplatskategori').update_layout(mapbox={"style": "carto-positron"})#(mapbox_style="open-street-map")
     if address_search:
 
-        coords=geodesic_point_buffer(float(filtered_address['lat']), float(filtered_address['lng']), selected_distance)
-        layers=dict(type = 'FeatureCollection',
+        coords = geo_circle_coordinates(float(filtered_address['lat']), float(filtered_address['lng']), selected_distance)
+        layers = dict(type = 'FeatureCollection',
                             features=[{
                                 "id":"7", 
                                     "type": "Feature",

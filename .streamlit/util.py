@@ -7,7 +7,7 @@ import os
 proj_wgs84 = pyproj.Proj('+proj=longlat +datum=WGS84')
 
 
-def geodesic_point_buffer(lat, lon, km):
+def geo_circle_coordinates(lat, lon, km):
     # Azimuthal equidistant projection
     #https://gis.stackexchange.com/a/289923/182676
     aeqd_proj = '+proj=aeqd +lat_0={lat} +lon_0={lon} +x_0=0 +y_0=0'

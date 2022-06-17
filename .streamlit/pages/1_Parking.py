@@ -1,4 +1,3 @@
-import os
 import pandas as pd
 import geopandas as gpd
 import plotly.express as px
@@ -6,33 +5,24 @@ import plotly.graph_objects as go
 from haversine import haversine
 import streamlit as st
 from address import load_address_data
-from util import geodesic_point_buffer
+from util import geo_circle_coordinates, file_path
 
 address_df = load_address_data()
-
-if os.name == 'nt':
-    file_path_prefix = '.'
-else:
-    file_path_prefix = os.getcwd() + '/.streamlit'
-    
+  
 @st.experimental_memo(show_spinner=True)
 def load_transport_data():
-    buss_gdf = gpd.read_file(file_path_prefix+"/data/transport/buss.gpkg")#CRS: EPSG:3006
-    husbil_gdf = gpd.read_file(file_path_prefix+"/data/transport/husbil.gpkg")#CRS: EPSG:3006
-    laddpl_gdf = gpd.read_file(file_path_prefix+"/data/transport/laddpl.gpkg")#CRS: EPSG:3006
-    mc_gdf = gpd.read_file(file_path_prefix+"/data/transport/mc.gpkg")#CRS: EPSG:3006
-    rorelseh_gdf = gpd.read_file(file_path_prefix+"/data/transport/rorelseh.gpkg")#CRS: EPSG:3006 
-    
-    cykelpumpar_gdf = gpd.read_file(file_path_prefix+"/data/transport/cykelpumpar.gpkg")#CRS: EPSG:3006 #  
-    parkeringsautomater_gdf = gpd.read_file(file_path_prefix+"/data/transport/parkeringsautomater.gpkg")#CRS: EPSG:3006    
-    
-    all_gdf = pd.concat([buss_gdf,husbil_gdf,laddpl_gdf,mc_gdf,rorelseh_gdf])
-    return ( all_gdf, parkeringsautomater_gdf,cykelpumpar_gdf)
+    buss_gdf = gpd.read_file(file_path() + "/data/transport/buss.gpkg")#CRS: EPSG:3006
+    husbil_gdf = gpd.read_file(file_path() + "/data/transport/husbil.gpkg")#CRS: EPSG:3006
+    laddpl_gdf = gpd.read_file(file_path() + "/data/transport/laddpl.gpkg")#CRS: EPSG:3006
+    mc_gdf = gpd.read_file(file_path() + "/data/transport/mc.gpkg")#CRS: EPSG:3006
+    rorelseh_gdf = gpd.read_file(file_path() + "/data/transport/rorelseh.gpkg")#CRS: EPSG:3006 
+
+    return pd.concat([buss_gdf,husbil_gdf,laddpl_gdf,mc_gdf,rorelseh_gdf])
 
     
 transport_gdf = load_transport_data()
 
-filtered_df = transport_gdf[0].copy()
+filtered_df = transport_gdf.copy()
 filtered_df['lat'] = filtered_df['geometry'].y
 filtered_df['lng'] = filtered_df['geometry'].x  
 
@@ -78,8 +68,8 @@ if len(filtered_df)>0:
 
     fig.update_traces(marker={'size': 15,'opacity':0.8})
     if address_search:
-        coords=geodesic_point_buffer(float(filtered_address['lat']), float(filtered_address['lng']), selected_distance)
-        layers=dict(type = 'FeatureCollection',
+        coords = geo_circle_coordinates(float(filtered_address['lat']), float(filtered_address['lng']), selected_distance)
+        layers = dict(type = 'FeatureCollection',
                             features=[{
                                 "id":"7", 
                                     "type": "Feature",

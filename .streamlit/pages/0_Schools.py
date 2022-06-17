@@ -1,4 +1,3 @@
-import os
 import pandas as pd
 import geopandas as gpd
 import plotly.express as px
@@ -6,21 +5,17 @@ import plotly.graph_objects as go
 from haversine import haversine
 import streamlit as st
 from address import load_address_data
-from util import geodesic_point_buffer
+from util import geo_circle_coordinates, file_path
 
 address_df = load_address_data()
 
-if os.name == 'nt':
-    file_path_prefix = '.'
-else:
-    file_path_prefix = os.getcwd() + '/.streamlit'
     
 @st.experimental_memo(show_spinner=True)
 def load_schools_data():
-    f_school_gdf = gpd.read_file(file_path_prefix+"/data/schools/forskola.gpkg")#CRS: EPSG:3006
-    gr_school_gdf = gpd.read_file(file_path_prefix+"/data/schools/grundskola.gpkg")#CRS: EPSG:3006
-    gy_school_gdf = gpd.read_file(file_path_prefix+"/data/schools/gymnasieskola.gpkg")#CRS: EPSG:3006
-    s_school_gdf = gpd.read_file(file_path_prefix+"/data/schools/sarskola.gpkg")#CRS: EPSG:3006
+    f_school_gdf = gpd.read_file(file_path() + "/data/schools/forskola.gpkg")#CRS: EPSG:3006
+    gr_school_gdf = gpd.read_file(file_path() + "/data/schools/grundskola.gpkg")#CRS: EPSG:3006
+    gy_school_gdf = gpd.read_file(file_path() + "/data/schools/gymnasieskola.gpkg")#CRS: EPSG:3006
+    s_school_gdf = gpd.read_file(file_path() + "/data/schools/sarskola.gpkg")#CRS: EPSG:3006
     return pd.concat([ f_school_gdf,gr_school_gdf,gy_school_gdf,s_school_gdf])
     
 schools_gdf = load_schools_data()
@@ -96,8 +91,8 @@ if len(filtered_df)>0:
 
 
     if address_search:
-        coords=geodesic_point_buffer(float(filtered_address['lat']), float(filtered_address['lng']), selected_distance)
-        layers=dict(type = 'FeatureCollection',
+        coords = geo_circle_coordinates(float(filtered_address['lat']), float(filtered_address['lng']), selected_distance)
+        layers = dict(type = 'FeatureCollection',
                             features=[{
                                 "id":"7", 
                                     "type": "Feature",
